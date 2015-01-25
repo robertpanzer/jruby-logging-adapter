@@ -4,7 +4,6 @@ import org.jruby.Ruby;
 import org.jruby.RubyClass;
 import org.jruby.RubyModule;
 import org.jruby.RubyObject;
-import org.jruby.RubyProc;
 import org.jruby.anno.JRubyMethod;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.Block;
@@ -28,12 +27,12 @@ public class SemanticLoggingJavaAppender extends RubyObject {
 
         LogEvent logEvent = (LogEvent) JavaEmbedUtils.rubyToJava(context.getRuntime(), log, LogEvent.class);
 
-        LogRecord logRecord = createJULLogRecordFromLogEvent(logEvent, context);
+        LogRecord logRecord = createJULLogRecordFromLogEvent(logEvent);
 
         Logger.getLogger(logEvent.getName()).log(logRecord);
     }
 
-    private LogRecord createJULLogRecordFromLogEvent(LogEvent logEvent, ThreadContext context) {
+    private LogRecord createJULLogRecordFromLogEvent(LogEvent logEvent) {
         Level level;
         switch (logEvent.getLevel()) {
             case "trace":
@@ -76,7 +75,11 @@ public class SemanticLoggingJavaAppender extends RubyObject {
 
         RubyClass baseClass = appenderModule.getClass("Base");
 
-        RubyClass extendedClass = semanticLoggerModule.defineClassUnder(
+        RubyModule fooModule = ruby.getOrCreateModule("Foo");
+
+        RubyModule barModule = fooModule.defineModuleUnder("Bar");
+
+        RubyClass extendedClass = barModule.defineClassUnder(
                 "JavaSemanticLoggerAppender",
                 baseClass,
                 new ObjectAllocator() {

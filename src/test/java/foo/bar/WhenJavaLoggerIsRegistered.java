@@ -33,7 +33,7 @@ public class WhenJavaLoggerIsRegistered {
 
     @Before
     public void setup() throws Exception {
-        ruby.evalScriptlet("SemanticLogger.add_appender SemanticLogger::JavaSemanticLoggerAppender.new(:info) {|log| log.message}");
+        ruby.evalScriptlet("SemanticLogger.add_appender Foo::Bar::JavaSemanticLoggerAppender.new(:info) {|log| log.message}");
     }
 
     @After
